@@ -23,6 +23,15 @@ class Bank:
 
 
 
+    def get_total_balance(self):
+        return self.t_balance
+    
+    def get_total_loan(self):
+        return self.t_loan
+    
+    def loan_feature_toggle(self, status):
+        self.loan_feature_toggle = status
+        print(f"Loan is now{'enabled' if status else 'disabled'}")
 
 
 
@@ -35,3 +44,19 @@ class User:
         self.user_name = user_name
         self.balance = balance
         self.transaction_history = []
+
+    def deposit(self, amount):
+        self.balance += amount
+        self.transaction_history.append(f"Deposited: {amount}")
+        print(f"{amount} deposited successfully")
+    
+    def withdraw(self,amount):
+        if amount <= self.balance:
+            self.balance -= amount
+            self.transaction_history.append(f"Withdrawed: {amount}")
+            print(f"Withdrew {amount} successfully")
+        else:
+            print("Fund not sufficient")
+
+    def check_balance(self):
+        return self.balance
