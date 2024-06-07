@@ -18,6 +18,10 @@ class Bank:
             else:
                 print(f"{user_name} already existed")
 
+
+        elif user_type == 'admin':
+            if user_name not in self.admins:
+                self.admins[user_name] = Admin(user_name)
         else:
             print("Invalid user type")
 
@@ -60,3 +64,21 @@ class User:
 
     def check_balance(self):
         return self.balance
+    
+    def tranfer_amount(self, amount, receiver):
+        if amount <= self.balance:
+            if receiver in self.clients:
+                self.balance -= amount
+                self.clients[receiver].balance
+
+
+
+
+
+
+
+
+
+
+class Admin:
+    pass
