@@ -34,6 +34,7 @@ class Bank:
         self.loan_enable = status
         print(f"Loan is now {'enabled' if status else 'disabled'}")
 
+
 class User:
     def __init__(self, user_name, balance=0):
         self.user_name = user_name
@@ -82,6 +83,7 @@ class User:
         else:
             print("Loan feature is currently disabled.")
 
+
 class Admin:
     def __init__(self, user_name):
         self.username = user_name
@@ -95,43 +97,83 @@ class Admin:
     def toggle_loan_feature(self, bank, status):
         bank.loan_feature_toggle(status)
 
-# Bank Name & Instance
+
+def user_menu(user, bank):
+    while True:
+        print("\nUser Menu")
+        print("1. Deposit")
+        print("2. Withdraw")
+        print("3. Check Balance")
+        print("4. Transfer Amount")
+        print("5. Check Transaction History")
+        print("6. Take Loan")
+        print("7. Exit")
+        choice = input("Enter your choice: ")
+        if choice == '1':
+            amount = float(input("Enter amount to deposit: "))
+            user.deposit(amount)
+        elif choice == '2':
+            amount = float(input("Enter amount to withdraw: "))
+            user.withdraw(amount)
+        elif choice == '3':
+            print(f"Available balance: {user.check_balance()}")
+        elif choice == '4':
+            amount = float(input("Enter amount to transfer: "))
+            receiver_username = input("Enter receiver's username: ")
+            user.transfer_amount(amount, receiver_username, bank)
+        elif choice == '5':
+            print("Transaction History:")
+            for transaction in user.check_history():
+                print(transaction)
+        elif choice == '6':
+            user.take_loan(bank)
+        elif choice == '7':
+            break
+        else:
+            print("Invalid choice, please try again.")
+
+
+def admin_menu(admin, bank):
+    while True:
+        print("\nAdmin Menu")
+        print("1. Check Total Balance")
+        print("2. Check Total Loans")
+        print("3. Toggle Loan Feature")
+        print("4. Exit")
+        choice = input("Enter your choice: ")
+        if choice == '1':
+            print(f"Total balance of the bank: {admin.check_total_balance(bank)}")
+        elif choice == '2':
+            print(f"Total loan amount: {admin.check_total_loans(bank)}")
+        elif choice == '3':
+            status = input("Enter 'True' to enable loan feature or 'False' to disable: ").lower() == 'true'
+            admin.toggle_loan_feature(bank, status)
+        elif choice == '4':
+            break
+        else:
+            print("Invalid choice, please try again.")
+
+
+# Main Program
 bank = Bank("Bank Asia")
 
 # Admin Create Account
+bank.create_account('admin', "admin1")
+
+# User Create Accounts
 bank.create_account('user', "Monir", 5000)
 bank.create_account('user', "Runa", 10000)
 
-# User Activities
+# Access User and Admin Menus
 Monir = bank.clients["Monir"]
 Runa = bank.clients["Runa"]
+admin1 = bank.admins["admin1"]
 
-Monir.deposit(3000)
-Monir.withdraw(2000)
-print(f"Monir's Balance: {Monir.check_balance()}")
+# User Menu for Monir
+user_menu(Monir, bank)
 
-Monir.transfer_amount(250, 'Runa', bank)
-print(f"Runa's Balance: {Runa.check_balance()}")
+# User Menu for Runa
+user_menu(Runa, bank)
 
-Monir.take_loan(bank)
-print(Monir.check_balance())
-print(bank.get_total_loan())
-
-
-# Checking transaction history
-print(Monir.check_history())
-print(Runa.check_history())
-
-
-# Admin Activities
-bank.create_account('admin', 'admin1')
-admin1 = bank.admins['admin1']
-
-print(admin1.check_total_balance(bank))
-print(admin1.check_total_loans(bank))
-
-admin1.toggle_loan_feature(bank, False)
-Monir.take_loan(bank)  # Should print that loan feature is disabled
-
-admin1.toggle_loan_feature(bank, True)
-Runa.take_loan(bank)  # Should print that loan feature is Enabled
+# Admin Menu for admin1
+admin_menu(admin1, bank)
